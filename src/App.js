@@ -11,6 +11,7 @@ import Profile from "./components/profile/Profile";
 import Home from "./components/home/Home";
 import Users from "./components/users/Users";
 import Roles from './components/roles/Roles';
+import AddPost from "./components/add-post/AddPost";
 import { UserContext, userContextValues } from "./context/userContext";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/roles" element={<Roles />} />
+        <Route path="/post/add" element={<AddPost />} />
       </Routes>
     </div>
     </UserContext.Provider>
