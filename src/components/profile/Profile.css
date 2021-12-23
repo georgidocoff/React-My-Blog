@@ -1,0 +1,17 @@
+@media screen and (min-width: 995px){
+   .form{
+       padding-left:30%;
+   }
+}
+
+@media (min-width: 767px) and (max-width: 994px) {
+    .form{
+        padding-left: 10vh;
+    }
+ }
+
+@media (min-width: 481px) {
+    .form{
+        offset: 0;
+    }
+}

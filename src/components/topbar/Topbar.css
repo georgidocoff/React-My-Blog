@@ -1,0 +1,22 @@
+.firstSlide{
+    visibility: hidden;
+    height: 30vh;
+    width: 200vh;
+    outline: dashed 1px black;
+}
+
+.secondSlide{
+    visibility: hidden;
+    height: 30vh;
+    width: 200vh;
+}
+
+.thirdSlide{
+    visibility: hidden;
+    height: 30vh;
+    width: 100vh;
+}
+
+.carousel{
+    background-color:grey;
+}
