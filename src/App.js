@@ -10,28 +10,33 @@ import Register from "./components/register/Register";
 import Profile from "./components/profile/Profile";
 import Home from "./components/home/Home";
 import Users from "./components/users/Users";
-import Roles from './components/roles/Roles';
+import Roles from "./components/roles/Roles";
 import AddPost from "./components/add-post/AddPost";
+import AllPosts from "./components/all-posts/AllPosts";
 import { UserContext, userContextValues } from "./context/userContext";
+import { ArticleContext, articleContextValues } from "./context/articleContext";
 
 function App() {
   return (
-    <UserContext.Provider value={userContextValues}>
-    <div className="App">
-      <Index />
+    <ArticleContext.Provider value={articleContextValues}>
+      <UserContext.Provider value={userContextValues}>
+        <div className="App">
+          <Index />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/admin/users" element={<Users />} />
-        <Route path="/admin/roles" element={<Roles />} />
-        <Route path="/post/add" element={<AddPost />} />
-      </Routes>
-    </div>
-    </UserContext.Provider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/admin/users" element={<Users />} />
+            <Route path="/admin/roles" element={<Roles />} />
+            <Route path="/post/add" element={<AddPost />} />
+            <Route path="/post/all" element={<AllPosts />} />
+          </Routes>
+        </div>
+      </UserContext.Provider>
+    </ArticleContext.Provider>
   );
 }
 
