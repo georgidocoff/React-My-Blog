@@ -87,7 +87,7 @@ function Users() {
             <th>UserName</th>
             <th>RoleNames</th>
             {isAdmin() && <th>Buttons</th>}
-          </tr> || <tr><th>No data avaiable...</th></tr>}
+          </tr> || <thead><tr><th>No data avaiable...</th></tr></thead>}
         </thead>
         <tbody>
           {users.map((x) => (

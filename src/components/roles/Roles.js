@@ -26,7 +26,7 @@ function Roles() {
                         <th hidden>Description</th>
                         <th>GrantedPermissions</th>
                     </tr>
-                </thead> || <tr><th>No data avaiable...</th></tr>}
+                </thead> || <thead><tr><th>No data avaiable...</th></tr></thead>}
             <tbody>
                 {roles?.map((x) => (
                     <tr key={x.id}>
