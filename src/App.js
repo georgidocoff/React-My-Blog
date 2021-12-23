@@ -9,6 +9,8 @@ import Logout from "./components/logout/Logout";
 import Register from "./components/register/Register";
 import Profile from "./components/profile/Profile";
 import Home from "./components/home/Home";
+import Users from "./components/users/Users";
+import Roles from './components/roles/Roles';
 import { UserContext, userContextValues } from "./context/userContext";
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin/users" element={<Users />} />
+        <Route path="/admin/roles" element={<Roles />} />
       </Routes>
     </div>
     </UserContext.Provider>
