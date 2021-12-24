@@ -1,48 +1,37 @@
+import { useEffect, useState } from "react";
 import { Card, CardGroup } from "react-bootstrap";
 
-const Home = () => {
+import {getThree} from '../../services/articlesService';
+function Home(){
+ const[data, setDate]= useState([]);
+
+ useEffect(()=>{
+   getThree().then((res)=>{
+        //console.log(res.result.items);
+        setDate(res.result.items);
+    })
+    .catch((err)=>{console.log(err)})
+ },[])
+    
+ console.log(data);
+
   return (
     <CardGroup>
-      <Card>
+      {data.map((x)=>{
+        return(
+        <Card>
         <Card.Img variant="top" src="" />
         <Card.Body>
-          <Card.Title>Card title</Card.Title>
+          <Card.Title>{x.title}</Card.Title>
           <Card.Text>
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
+            {x.description}
           </Card.Text>
         </Card.Body>
         <Card.Footer>
-          <small className="text-muted">Last updated 3 mins ago</small>
+          <small className="text-muted">Last updated {Math.round((Date.now() - Date.parse(x.creationTime))/(60*1000))-60} mins ago</small>
         </Card.Footer>
-      </Card>
-      <Card>
-        <Card.Img variant="top" src="" />
-        <Card.Body>
-          <Card.Title>Card title</Card.Title>
-          <Card.Text>
-            This card has supporting text below as a natural lead-in to
-            additional content.{" "}
-          </Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <small className="text-muted">Last updated 3 mins ago</small>
-        </Card.Footer>
-      </Card>
-      <Card>
-        <Card.Img variant="top" src="" />
-        <Card.Body>
-          <Card.Title>Card title</Card.Title>
-          <Card.Text>
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This card has even longer content than the
-            first to show that equal height action.
-          </Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <small className="text-muted">Last updated 3 mins ago</small>
-        </Card.Footer>
-      </Card>
+      </Card>)
+      })}no
     </CardGroup>
   );
 };
