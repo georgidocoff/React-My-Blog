@@ -13,6 +13,7 @@ import Users from "./components/users/Users";
 import Roles from "./components/roles/Roles";
 import AddPost from "./components/add-post/AddPost";
 import AllPosts from "./components/all-posts/AllPosts";
+import PostDetails from "./components/post-details/PostDetails";
 import { UserContext, userContextValues } from "./context/userContext";
 import { ArticleContext, articleContextValues } from "./context/articleContext";
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/admin/roles" element={<Roles />} />
             <Route path="/post/add" element={<AddPost />} />
             <Route path="/post/all" element={<AllPosts />} />
+            <Route path="/post/:articleId/details" element={<PostDetails />} />
           </Routes>
         </div>
       </UserContext.Provider>
