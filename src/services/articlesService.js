@@ -26,6 +26,24 @@ export const create = async (articleData)=>{
     }
 }
 
+export const getArticleById = async (articleId)=>{
+    let res = await fetch(`${REACT_APP_API_BASE_URL}/api/services/app/Articles/Get?Id=${articleId}`, {
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': cookiesService.GetToken(),           
+            'Abp.TenantId': Default_Tenant_Id,    
+        }
+    });
+
+    let jsonResult = await res.json();
+   // console.log(jsonResult.result);
+    if (res.ok) {
+        return jsonResult;
+    } else {
+        throw jsonResult.message;
+    }
+}
+
 export const getAll = async () =>{
     let res = await fetch(`${REACT_APP_API_BASE_URL}/api/services/app/Articles/GetAll`, {
         headers: {
