@@ -1,5 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Card, Button, Col, Row } from "react-bootstrap";
+import {Link} from 'react-router-dom';
+
 import { ArticleContext } from "../../context/articleContext";
 
 import "./AllPosts.css";
@@ -17,7 +19,8 @@ const AllPosts = () => {
 
   useEffect(() => {
     getStoredArticles();
-  }, [getStoredArticles]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function getStoredArticles() {
@@ -38,7 +41,7 @@ const AllPosts = () => {
                 <Card.Body>
                   <Card.Title>{x.title}</Card.Title>
                   <Card.Text>{x.description}</Card.Text>
-                  <Button variant="primary">Details</Button>
+                  <Link className="button" to={`/post/${x.id}/details`}>Details</Link>
                 </Card.Body>
               </Col>
               <Col>
