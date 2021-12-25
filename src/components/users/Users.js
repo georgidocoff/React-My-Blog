@@ -25,7 +25,7 @@ function Users() {
 
   useEffect(() => {
    getUsers();
-  }, [getUsers]);
+  }, []);
 
   const onChangeUserNameHandler = (e) => {
     const value =
@@ -41,7 +41,7 @@ function Users() {
     userContext.getAll().then((res) => {
       //console.log(res.result);
       setUsers(res.result.items);
-    }).catch((err) => { console.log(err) });;
+    }).catch((err) => { console.log(err) });
   }
 
   function onChangeCheckBoxHandler(check) {
@@ -87,7 +87,7 @@ function Users() {
             <th>UserName</th>
             <th>RoleNames</th>
             {isAdmin() && <th>Buttons</th>}
-          </tr> || <thead><tr><th>No data avaiable...</th></tr></thead>}
+          </tr> || <tr><th>No data avaiable...</th></tr>}
         </thead>
         <tbody>
           {users.map((x) => (
