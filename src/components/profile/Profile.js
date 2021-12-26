@@ -16,7 +16,7 @@ const Profile = () => {
 
     const profileSubmitHandler = (e) => {
         e.preventDefault();
-
+        
         let profileData = Object.fromEntries(new FormData(e.currentTarget))
 
         userService.UpdateUserById(user.id, profileData)
@@ -66,11 +66,12 @@ const Profile = () => {
                             <Form.Control type="surName" placeholder="Enter Sur Name" defaultValue={user.surname} name="surName" />
                         </Form.Group>
                     </Row>
-                    <Form.Group className="mb-3" id="formGridIsActive">
-                        {user.isActive
-                            ? <Form.Check type="checkbox" label="Is Active" defaultChecked disabled />
-                            : <Form.Check type="checkbox" label="Is Active" disabled />}
+                    <Row className="mb-3">
+                    <Form.Group as={Col} controlId="formGridIsActive">
+                            <Form.Check type='checkbox' label='Is Active' defaultChecked={user.isActive} disabled/>
+                            <Form.Control hidden type="isActive" defaultValue={user.isActive} name="isActive" />
                     </Form.Group>
+                    </Row>
 
                     <Button variant="primary" type="submit">
                         Submit
