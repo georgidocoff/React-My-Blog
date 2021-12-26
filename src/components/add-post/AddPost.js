@@ -6,6 +6,8 @@ import "./AddPost.css";
 
 import { create } from "../../services/articlesService";
 import { isAuth } from "../../services/authService";
+import { useNotificationContext, types } from '../../context/NotificationContext';
+
 
 function AddPost() {
   const [article, setArticle] = useState({
@@ -14,6 +16,7 @@ function AddPost() {
     description: "",
   });
 
+  const { addNotification } = useNotificationContext();
   const navigate = useNavigate();
 
   const onAddPostChangeHandler = (e) => {
@@ -29,9 +32,15 @@ function AddPost() {
     e.preventDefault();
     
     create({article}).then((res) => {
-      //console.log(res);
-
+      //console.log(res?.result.title);
+      if (res?.success) {
+        addNotification(`You successfully create article with title ${res?.result.title}`, types.success);
+      } else{
+        addNotification('Something went wrong with update...', types.error);
+      }
       navigate("/");
+    }).catch((err)=>{
+      addNotification('Something went wrong with user create...', types.error);
     });
   };
 

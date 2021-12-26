@@ -3,23 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Form, Modal } from 'react-bootstrap';
 
 import * as authService from '../../services/authService';
+import { useNotificationContext, types } from '../../context/NotificationContext';
+import { Default_Token_Name } from '../../shared/constants';
 
 const Login = () => {
-
     const navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(['auth']);
+    const [cookies, setCookie] = useCookies([Default_Token_Name]);
+    const { addNotification } = useNotificationContext();
 
     function login(email, password) {
         authService.login(email, password)
             .then((authData) => {
-                //console.log(authData.result.accessToken);
-                setCookie('auth', authData.result.accessToken);
-
+                console.log(authData);
+                setCookie(Default_Token_Name, authData.result.accessToken);
+                addNotification('You logged in successfully', types.success);
                 navigate('/');
+
             })
-            .catch(err => {
+            .catch((err) => {
                 // TODO: show notification
-                console.log(err);
+                //console.log(err);
+                addNotification(`Invalid credential for login.`, types.warn);
             });
     }
 

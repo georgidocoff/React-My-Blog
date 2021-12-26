@@ -3,8 +3,11 @@ import { Table, Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 
 import { UserContext, userContextValues } from "../../context/userContext";
 import { isAdmin } from "../../services/authService";
+import { useNotificationContext, types } from '../../context/NotificationContext';
+
 
 function Users() {
+  const { addNotification } = useNotificationContext();
   const [users, setUsers] = useState([]);
   const userContext = useContext(UserContext);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -58,7 +61,14 @@ function Users() {
       // update the selected user
       userContext.update(userData).then((res) => {
         //console.log(res);
+        if (res?.success) {
+          addNotification(`You successfully update user with email ${res?.result.emailAddress}`, types.success);
+        } else{
+          addNotification('Something went wrong with update...', types.error);
+        }
         getUsers();
+      }).catch((err)=>{
+        addNotification('Something went wrong with update...', types.error);
       });
     }
   }
@@ -69,8 +79,15 @@ function Users() {
     if (data) {
       handleDeleteClose();
       userContext.deleteUser(data.data.id).then((res) => {
-        console.log(res);
+        //console.log(res);
+        if (res?.success) {
+          addNotification(`You successfully delete user.`, types.success);
+        } else{
+          addNotification('Something went wrong with delete...', types.error);
+        }
         getUsers();
+      }).catch((err)=>{
+        addNotification('Something went wrong with delete...', types.error);
       });
     }
   }

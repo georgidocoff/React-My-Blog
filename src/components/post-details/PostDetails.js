@@ -13,14 +13,15 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import "./PostDetails.css";
 
 import useArticleState from "../../hooks/useArticleState";
-import {
-  ArticleContext,
-  articleContextValues,
-} from "../../context/articleContext";
+import { ArticleContext, articleContextValues } from "../../context/articleContext";
+import { useNotificationContext, types } from '../../context/NotificationContext';
 import { isAuth } from "../../services/authService";
+import { GetUserId } from "../../services/cookiesService";
 
 function PostDetails() {
   const articleContext = useContext(ArticleContext);
+  const { addNotification } = useNotificationContext();
+
   const navigate = useNavigate();
 
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -46,8 +47,14 @@ function PostDetails() {
 
       // update the selected user
       articleContext.updateArticle(articleData).then((res) => {
-        console.log(res);
-        //getArticle();
+        //console.log(res);
+        if (res?.success) {
+          addNotification(`You successfully update article with title ${res?.result.title}`, types.success);
+        } else{
+          addNotification('Something went wrong with update...', types.error);
+        }
+      }).catch((err)=>{
+        addNotification('Something went wrong with user create...', types.error);
       });
     }
   }
@@ -58,15 +65,22 @@ function PostDetails() {
     if (article) {
       handleDeleteClose();
       articleContext.deleteArticle(article?.id).then((res) => {
-        console.log(res);
+        //console.log(res);
+        if (res?.success) {
+          addNotification(`You successfully delete article.`, types.success);
+        } else{
+          addNotification('Something went wrong with update...', types.error);
+        }
         navigate("/");
+      }).catch((err)=>{
+        addNotification('Something went wrong with user create...', types.error);
       });
     }
   }
 
   const { articleId } = useParams();
   const [article, setArticle] = useArticleState(articleId);
-
+  
   return (
     <>
       <br />
@@ -89,26 +103,30 @@ function PostDetails() {
       </Row>
       <Row>
         <Card.Footer>
-          <Button
-            id={article.id}
-            variant="secondary"
-            onClick={() => {
-              onEditClickHandler(article);
-              setArticle(article);
-            }}
-          >
-            Edit
-          </Button>{" "}
-          <Button
-            id={article.id}
-            variant="danger"
-            onClick={() => {
-              onDeleteClickHandler();
-              setArticle(article);
-            }}
-          >
-            Dell
-          </Button>
+          {article.creatorUserId == GetUserId() && (
+            <>
+              <Button
+                id={article.id}
+                variant="secondary"
+                onClick={() => {
+                  onEditClickHandler(article);
+                  setArticle(article);
+                }}
+              >
+                Edit
+              </Button>{" "}
+              <Button
+                id={article.id}
+                variant="danger"
+                onClick={() => {
+                  onDeleteClickHandler();
+                  setArticle(article);
+                }}
+              >
+                Dell
+              </Button>
+            </>
+          )}
         </Card.Footer>
       </Row>
 
@@ -181,9 +199,7 @@ function PostDetails() {
           </Button>
           <Button
             variant="warning"
-            onClick={() => 
-              onDeleteClickHandler(article)
-            }
+            onClick={() => onDeleteClickHandler(article)}
           >
             OK
           </Button>

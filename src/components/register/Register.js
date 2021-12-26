@@ -2,28 +2,31 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
  
 import * as authService from '../../services/authService';
+import { useNotificationContext, types } from '../../context/NotificationContext';
+
 
 const Register = () => {
+    const { addNotification } = useNotificationContext();
 
     const navigate = useNavigate();
     //const [cookies, setCookie] = useCookies(['auth']);
 
     function register(email, password, rePassword, userName, name, surname) {
         if (password != rePassword) {
-            console.log('The passwordand repeat password not match.');
+           addNotification(`The passwordand repeat password not match.`, types.warn);
             return;
         }
 
         authService.register(email, password, rePassword, userName, name, surname)
             .then((authData) => {
-                //console.log(authData.result.accessToken);
-                //setCookie('auth', authData.result.accessToken);
-                //console.log(authData);
+                console.log(authData);
+                addNotification(`You successfuly create user with email: ${email}`, types.success);
                 navigate('/');
             })
             .catch(err => {
                 // TODO: show notification
-                console.log(err);
+                //console.log(err);
+                addNotification('Something went wrong with user create...', types.error);
             });
     }
 

@@ -6,8 +6,11 @@ import './Profile.css';
 import * as cookiesService from '../../services/cookiesService';
 import useUserState from '../../hooks/useUserState';
 import * as userService from '../../services/userService';
+import { useNotificationContext, types } from '../../context/NotificationContext';
+
 
 const Profile = () => {
+    const { addNotification } = useNotificationContext();
     const userId = cookiesService.GetUserId();
     const [user, setUser] = useUserState(userId);
 
@@ -19,10 +22,16 @@ const Profile = () => {
         userService.UpdateUserById(user.id, profileData)
             .then((res) => {
                 //console.log(res);
+                if (res?.success) {
+                    addNotification(`You successfully update profile with email ${res?.result.emailAddress}`, types.success);
+                  } else{
+                    addNotification('Something went wrong with update...', types.error);
+                  }
             })
-            .catch((err) =>
-                console.log(err)
-            );
+            .catch((err) =>{
+                //console.log(err)
+                addNotification(`Invalid profile update.`, types.error);
+            });
     }
 
     return (
