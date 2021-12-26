@@ -71,7 +71,12 @@ export const UpdateUserById = async (id, profileData) => {
     });
 
     let jsonResult = await res.json();
-    //console.log(jsonResult);
+    //console.log(jsonResult.result);
+    if (res.ok) {
+        return jsonResult;
+    } else {
+        throw jsonResult.message;
+    }
 }
 
 export const deleteUserById = async (id) =>{
