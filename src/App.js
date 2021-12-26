@@ -16,14 +16,18 @@ import AllPosts from "./components/all-posts/AllPosts";
 import PostDetails from "./components/post-details/PostDetails";
 import { UserContext, userContextValues } from "./context/userContext";
 import { ArticleContext, articleContextValues } from "./context/articleContext";
+import { NotificationProvider } from './context/NotificationContext'
+import Notification from "./components/notification/Notification";
 
 function App() {
   return (
     <ArticleContext.Provider value={articleContextValues}>
       <UserContext.Provider value={userContextValues}>
+        <NotificationProvider>
         <div className="App">
           <Index />
-
+          <Notification/>
+          
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -37,6 +41,7 @@ function App() {
             <Route path="/post/:articleId/details" element={<PostDetails />} />
           </Routes>
         </div>
+        </NotificationProvider>
       </UserContext.Provider>
     </ArticleContext.Provider>
   );
