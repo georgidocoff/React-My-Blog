@@ -6,16 +6,21 @@ import * as authService from "../../services/authService";
 import { Default_Token_Name } from '../../shared/constants';
 import { useNotificationContext, types } from '../../context/NotificationContext';
 
+import Loading from '../loading/Loading';
+
 const Logout = () => {
     const navigate = useNavigate();
     const { addNotification } = useNotificationContext();
+    const [showLoading, setShowLoading] = useState(false);
 
     const [cookies, setCookie, removeCookie] = useCookies([Default_Token_Name]);
 
     useEffect(() => {
+        setShowLoading(true);
         authService.logout(cookies)
             .then(() => {
                 setCookie(Default_Token_Name, null, { path: '/' });
+                setShowLoading(false);
                 setTimeout(() => {                   
                     removeCookie(Default_Token_Name);
                     addNotification('You successfully log out.', types.success);
@@ -27,7 +32,7 @@ const Logout = () => {
             )
     }, [cookies, setCookie, removeCookie, navigate]);
 
-    return null;
+    return (showLoading?<Loading/>:null);
 }
 
 export default Logout;

@@ -1,0 +1,27 @@
+.loading-first{
+    width: 7vh;
+    height: 7vh;
+    margin-top: 10vh;
+    margin-left: 42%;
+}
+
+.loading-second{
+    width: 7vh;
+    height: 7vh;
+    margin-top: 10vh;
+    margin-left: 1vh;
+}
+
+.loading-third{
+    width: 7vh;
+    height: 7vh;
+    margin-top: 10vh;
+    margin-left:  1vh;
+}
+
+.loading-last{
+    width: 7vh;
+    height: 7vh;
+    margin-top: 10vh;
+    margin-left: 1vh;
+}
