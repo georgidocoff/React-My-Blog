@@ -3,8 +3,10 @@ import { Table, Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 
 import { UserContext, userContextValues } from "../../context/userContext";
 import { isAdmin } from "../../services/authService";
-import { useNotificationContext, types } from '../../context/NotificationContext';
-
+import {
+  useNotificationContext,
+  types,
+} from "../../context/NotificationContext";
 
 function Users() {
   const { addNotification } = useNotificationContext();
@@ -13,7 +15,7 @@ function Users() {
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const handleEditClose = () => setShowEditDialog(false);
-  
+
   const [data, setData] = useState({
     name: "",
     surname: "",
@@ -27,7 +29,7 @@ function Users() {
   const handleDeleteClose = () => setShowDeleteDialog(false);
 
   useEffect(() => {
-   getUsers();
+    getUsers();
   }, []);
 
   const onChangeUserNameHandler = (e) => {
@@ -40,11 +42,16 @@ function Users() {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  function getUsers(){
-    userContext.getAll().then((res) => {
-      //console.log(res.result);
-      setUsers(res.result.items);
-    }).catch((err) => { console.log(err) });
+  function getUsers() {
+    userContext
+      .getAll()
+      .then((res) => {
+        //console.log(res.result);
+        setUsers(res.result.items);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function onChangeCheckBoxHandler(check) {
@@ -59,17 +66,23 @@ function Users() {
       handleEditClose();
 
       // update the selected user
-      userContext.update(userData).then((res) => {
-        //console.log(res);
-        if (res?.success) {
-          addNotification(`You successfully update user with email ${res?.result.emailAddress}`, types.success);
-        } else{
-          addNotification('Something went wrong with update...', types.error);
-        }
-        getUsers();
-      }).catch((err)=>{
-        addNotification('Something went wrong with update...', types.error);
-      });
+      userContext
+        .update(userData)
+        .then((res) => {
+          //console.log(res);
+          if (res?.success) {
+            addNotification(
+              `You successfully update user with email ${res?.result.emailAddress}`,
+              types.success
+            );
+          } else {
+            addNotification("Something went wrong with update...", types.error);
+          }
+          getUsers();
+        })
+        .catch((err) => {
+          addNotification("Something went wrong with update...", types.error);
+        });
     }
   }
 
@@ -78,17 +91,20 @@ function Users() {
 
     if (data) {
       handleDeleteClose();
-      userContext.deleteUser(data.data.id).then((res) => {
-        //console.log(res);
-        if (res?.success) {
-          addNotification(`You successfully delete user.`, types.success);
-        } else{
-          addNotification('Something went wrong with delete...', types.error);
-        }
-        getUsers();
-      }).catch((err)=>{
-        addNotification('Something went wrong with delete...', types.error);
-      });
+      userContext
+        .deleteUser(data.data.id)
+        .then((res) => {
+          //console.log(res);
+          if (res?.success) {
+            addNotification(`You successfully delete user.`, types.success);
+          } else {
+            addNotification("Something went wrong with delete...", types.error);
+          }
+          getUsers();
+        })
+        .catch((err) => {
+          addNotification("Something went wrong with delete...", types.error);
+        });
     }
   }
 
@@ -96,47 +112,53 @@ function Users() {
     <>
       <Table responsive>
         <thead>
-          {users.length > 0 &&
+          {users.length > 0 && isAdmin() && (
+            <tr>
+              <th>Id</th>
+              <th>First Name</th>
+              <th>Sur Name</th>
+              <th>UserName</th>
+              <th>RoleNames</th>
+              <th>Buttons</th>
+            </tr>
+          )}{" "}
+          ||{" "}
           <tr>
-            <th>Id</th>
-            <th>First Name</th>
-            <th>Sur Name</th>
-            <th>UserName</th>
-            <th>RoleNames</th>
-            {isAdmin() && <th>Buttons</th>}
-          </tr> || <tr><th>No data avaiable...</th></tr>}
+            <th>No data avaiable...</th>
+          </tr>
         </thead>
         <tbody>
           {users.map((x) => (
+            isAdmin() &&
             <tr key={x.id}>
               <td>{x.id}</td>
               <td>{x.name}</td>
               <td>{x.surname}</td>
               <td>{x.userName}</td>
               <td>{x.roleNames}</td>
-              {isAdmin() &&
-              <td>
-                <Button
-                  id={x.id}
-                  variant="secondary"
-                  onClick={() => {
-                    onEditClickHandler(x);
-                    setData(x);
-                  }}
-                >
-                  Edit
-                </Button>{" "}
-                <Button
-                  id={x.id}
-                  variant="danger"
-                  onClick={() => {
-                    onDeleteClickHandler();
-                    setData(x);
-                  }}
-                >
-                  Dell
-                </Button>
-              </td>}
+                <td>
+                  <Button
+                    id={x.id}
+                    variant="secondary"
+                    onClick={() => {
+                      onEditClickHandler(x);
+                      setData(x);
+                    }}
+                  >
+                    Edit
+                  </Button>{" "}
+                  <Button
+                    id={x.id}
+                    variant="danger"
+                    onClick={() => {
+                      onDeleteClickHandler();
+                      setData(x);
+                    }}
+                  >
+                    Dell
+                  </Button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -203,7 +225,6 @@ function Users() {
             <InputGroup.Checkbox
               onChange={() => {
                 onChangeCheckBoxHandler(data.isActive);
-                
               }}
               defaultChecked={data.isActive}
             />
