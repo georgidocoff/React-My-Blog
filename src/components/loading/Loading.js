@@ -10,16 +10,6 @@ function Loading() {
         <Spinner className="loading-third" animation="grow" variant="info" />
         <Spinner className="loading-last" animation="grow" variant="light" />
       </>
-//     <Spinner
-//       animation="border"
-//       role="status"
-//       style={{
-//         width: "200px",
-//         height: "200px",
-//       }}
-//     >
-//       <span className="visually-hidden"> Loading... </span>{" "}
-//     </Spinner>
    );
 }
 
