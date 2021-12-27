@@ -18,9 +18,12 @@ import { UserContext, userContextValues } from "./context/userContext";
 import { ArticleContext, articleContextValues } from "./context/articleContext";
 import { NotificationProvider } from './context/NotificationContext'
 import Notification from "./components/notification/Notification";
+import { AuthContext, authValues } from './context/authContext';
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 
 function App() {
   return (
+    <AuthContext.Provider value={authValues}>
     <ArticleContext.Provider value={articleContextValues}>
       <UserContext.Provider value={userContextValues}>
         <NotificationProvider>
@@ -33,17 +36,22 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/admin/users" element={<Users />} />
-            <Route path="/admin/roles" element={<Roles />} />
-            <Route path="/post/add" element={<AddPost />} />
             <Route path="/post/all" element={<AllPosts />} />
-            <Route path="/post/:articleId/details" element={<PostDetails />} />
+          
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin/users" element={<Users />} />
+              <Route path="/admin/roles" element={<Roles />} />
+              <Route path="/post/add" element={<AddPost />} />
+              <Route path="/post/:articleId/details" element={<PostDetails />} />
+            </Route>
+
           </Routes>
         </div>
         </NotificationProvider>
       </UserContext.Provider>
     </ArticleContext.Provider>
+    </AuthContext.Provider>
   );
 }
 
