@@ -8,6 +8,7 @@ import { create } from "../../services/articlesService";
 import { isAuth } from "../../services/authService";
 import { useNotificationContext, types } from '../../context/NotificationContext';
 
+import Loading from '../loading/Loading';
 
 function AddPost() {
   const [article, setArticle] = useState({
@@ -15,6 +16,7 @@ function AddPost() {
     imageUrl: "",
     description: "",
   });
+  const [showLoading, setShowLoading] = useState(false);
 
   const { addNotification } = useNotificationContext();
   const navigate = useNavigate();
@@ -30,9 +32,10 @@ function AddPost() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    
+    setShowLoading(true);
     create({article}).then((res) => {
       //console.log(res?.result.title);
+      setShowLoading(false);
       if (res?.success) {
         addNotification(`You successfully create article with title ${res?.result.title}`, types.success);
       } else{
@@ -45,7 +48,8 @@ function AddPost() {
   };
 
   return (
-    <Card body>
+    !showLoading
+    ?<Card body>
       <Form onSubmit={onSubmitHandler}>
         <Row>
           <Form.Label column lg={2}>
@@ -112,6 +116,7 @@ function AddPost() {
         </Button>
       </Form>
     </Card>
+    :<Loading/>
   );
 }
 

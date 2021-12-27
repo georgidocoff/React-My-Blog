@@ -1,25 +1,27 @@
+import {useState} from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
  
 import * as authService from '../../services/authService';
 import { useNotificationContext, types } from '../../context/NotificationContext';
-
+import Loading from '../loading/Loading';
 
 const Register = () => {
     const { addNotification } = useNotificationContext();
+    const [showLoading, setShowLoading] = useState(false);
 
     const navigate = useNavigate();
-    //const [cookies, setCookie] = useCookies(['auth']);
 
     function register(email, password, rePassword, userName, name, surname) {
         if (password != rePassword) {
            addNotification(`The passwordand repeat password not match.`, types.warn);
             return;
         }
-
+        setShowLoading(true);
         authService.register(email, password, rePassword, userName, name, surname)
             .then((authData) => {
-                console.log(authData);
+                //console.log(authData);
+                setShowLoading(false);
                 addNotification(`You successfuly create user with email: ${email}`, types.success);
                 navigate('/');
             })
@@ -46,7 +48,8 @@ const Register = () => {
     }
 
     return (
-        <Modal.Dialog>
+        !showLoading
+        ?<Modal.Dialog>
             <Modal.Header closeButton>
                 <Modal.Title>Register</Modal.Title>
             </Modal.Header>
@@ -88,6 +91,7 @@ const Register = () => {
                 </Modal.Footer>
             </Form>
         </Modal.Dialog>
+        :<Loading/>
     );
 }
 

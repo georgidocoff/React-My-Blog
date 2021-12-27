@@ -1,5 +1,6 @@
-//import { useNavigate } from 'react-router-dom';
+import {useState} from 'react';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
 
 import './Profile.css';
 
@@ -7,23 +8,27 @@ import * as cookiesService from '../../services/cookiesService';
 import useUserState from '../../hooks/useUserState';
 import * as userService from '../../services/userService';
 import { useNotificationContext, types } from '../../context/NotificationContext';
-
+import Loading from '../loading/Loading';
 
 const Profile = () => {
     const { addNotification } = useNotificationContext();
     const userId = cookiesService.GetUserId();
+    const navigate = useNavigate();
     const [user, setUser] = useUserState(userId);
+    const [showLoading, setShowLoading] = useState(false);
 
     const profileSubmitHandler = (e) => {
         e.preventDefault();
-        
+        setShowLoading(true);
         let profileData = Object.fromEntries(new FormData(e.currentTarget))
 
         userService.UpdateUserById(user.id, profileData)
             .then((res) => {
                 //console.log(res);
+                setShowLoading(false);
                 if (res?.success) {
                     addNotification(`You successfully update profile with email ${res?.result.emailAddress}`, types.success);
+                    navigate('/');
                   } else{
                     addNotification('Something went wrong with update...', types.error);
                   }
@@ -35,7 +40,8 @@ const Profile = () => {
     }
 
     return (
-        <Card className="form" style={{ width: 'fit-content' }}>
+        !showLoading
+        ?<Card className="form" style={{ width: 'fit-content' }}>
             <Card.Body>
                 <Form method="POST" onSubmit={profileSubmitHandler}>
                     <Row className="mb-3">
@@ -79,6 +85,7 @@ const Profile = () => {
                 </Form>
             </Card.Body>
         </Card>
+        :<Loading/>
     );
 }
 

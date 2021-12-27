@@ -5,6 +5,7 @@ import { isAuth } from "../../services/authService";
 import { getUserById } from "../../services/userService";
 import { getThree } from "../../services/articlesService";
 import { UserContext, userContextValues } from "../../context/userContext";
+import Loading from '../loading/Loading';
 
 function publishPostTime(createTime) {
   return Math.round((Date.now() - Date.parse(createTime)) / (60 * 1000)) - 60;
@@ -13,7 +14,7 @@ function publishPostTime(createTime) {
 function Home() {
   const [data, setDate] = useState([]);
   const [users, setUsers] = useState([]);
-
+  const [showLoading, setShowLoading] = useState(false);
   const userContext = useContext(UserContext);
 
   function renderPublishUser(userId) {
@@ -25,9 +26,11 @@ function Home() {
   }
 
   useEffect(() => {
+    setShowLoading(true);
     getThree()
       .then((res) => {
         //console.log(res.result.items);
+        setShowLoading(false);
         setDate(res?.result.items);
       })
       .catch((err) => {
@@ -44,7 +47,8 @@ function Home() {
 
   data.map((x) => (x.userFullName = renderPublishUser(x.creatorUserId)));
   return (
-    <CardGroup>
+    !showLoading
+    ?<CardGroup>
       {(data?.length > 0 &&
         data.map((x) => {
           return (
@@ -67,6 +71,7 @@ function Home() {
           );
         })) || <h5>No data avaiable...</h5>}
     </CardGroup>
+    :<Loading/>
   );
 }
 

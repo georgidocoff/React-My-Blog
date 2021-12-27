@@ -17,12 +17,14 @@ import { ArticleContext, articleContextValues } from "../../context/articleConte
 import { useNotificationContext, types } from '../../context/NotificationContext';
 import { isAuth } from "../../services/authService";
 import { GetUserId } from "../../services/cookiesService";
+import Loading from '../loading/Loading';
 
 function PostDetails() {
   const articleContext = useContext(ArticleContext);
   const { addNotification } = useNotificationContext();
 
   const navigate = useNavigate();
+  const [showLoading, setShowLoading] = useState(false);
 
   const [showEditDialog, setShowEditDialog] = useState(false);
   const handleEditClose = () => setShowEditDialog(false);
@@ -44,10 +46,11 @@ function PostDetails() {
     if (showEditDialog) {
       //console.log(userData);
       handleEditClose();
-
+      setShowLoading(true);
       // update the selected user
       articleContext.updateArticle(articleData).then((res) => {
         //console.log(res);
+        setShowLoading(false);
         if (res?.success) {
           addNotification(`You successfully update article with title ${res?.result.title}`, types.success);
         } else{
@@ -59,13 +62,15 @@ function PostDetails() {
     }
   }
 
-  function onDeleteClickHandler(article) {
+  function onDeleteClickHandler(articleData) {
     setShowDeleteDialog(true);
 
-    if (article) {
+    if (articleData) {
       handleDeleteClose();
-      articleContext.deleteArticle(article?.id).then((res) => {
+      setShowLoading(true);
+      articleContext.deleteArticle(articleData?.id).then((res) => {
         //console.log(res);
+        setShowLoading(false);
         if (res?.success) {
           addNotification(`You successfully delete article.`, types.success);
         } else{
@@ -82,7 +87,8 @@ function PostDetails() {
   const [article, setArticle] = useArticleState(articleId);
   
   return (
-    <>
+    !showLoading
+    ?<>
       <br />
       <Row key={article.id}>
         <Col>
@@ -206,6 +212,7 @@ function PostDetails() {
         </Modal.Footer>
       </Modal>
     </>
+    :<Loading/>
   );
 }
 

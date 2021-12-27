@@ -3,6 +3,7 @@ import { Card, Button, Col, Row } from "react-bootstrap";
 import {Link} from 'react-router-dom';
 
 import { ArticleContext } from "../../context/articleContext";
+import Loading from '../loading/Loading';
 
 import "./AllPosts.css";
 
@@ -14,7 +15,7 @@ const AllPosts = () => {
     creationTime: "",
     creatorUserId: 0,
   });
-
+  const [showLoading, setShowLoading] = useState(false);
   const articleContext = useContext(ArticleContext);
 
   useEffect(() => {
@@ -24,14 +25,17 @@ const AllPosts = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function getStoredArticles() {
+    setShowLoading(true);
     articleContext.getAllArticles().then((res) => {
       //console.log(res.result);
+      setShowLoading(false);
       setData(res?.result.items);
     });
   }
 
   return (
-    <>
+    !showLoading
+    ?<>
       {(data.length > 0 &&
         data.map((x) => (
           <>
@@ -53,6 +57,7 @@ const AllPosts = () => {
           </>
         ))) || <h3>No data avaiable...</h3>}
     </>
+    :<Loading/>
   );
 };
 

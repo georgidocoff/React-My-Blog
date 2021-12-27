@@ -2,20 +2,25 @@ import { useState, useEffect } from "react";
 import { Table } from "react-bootstrap";
 
 import { getRoles } from "../../services/userService";
+import Loading from '../loading/Loading';
 
 function Roles() {
     let getAll = getRoles().catch((err) => { console.log(err) });
     const [roles, setRoles] = useState([]);
+    const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
+        setShowLoading(true);
         getAll.then((res) => {
             //console.log(res?.result.items);
+            setShowLoading(false);
             setRoles(res?.result.items);
         });
     }, []);
 
     return (
-        <Table responsive>
+        !showLoading
+        ?<Table responsive>
             {roles?.length > 0 &&
                 <thead>
                     <tr>
@@ -40,6 +45,7 @@ function Roles() {
                 ))}
             </tbody>
         </Table>
+        :<Loading/>
     );
 }
 

@@ -4,13 +4,14 @@ import { Table, Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 import { UserContext, userContextValues } from "../../context/userContext";
 import { isAdmin } from "../../services/authService";
 import { useNotificationContext, types } from '../../context/NotificationContext';
-
+import Loading from '../loading/Loading';
 
 function Users() {
   const { addNotification } = useNotificationContext();
   const [users, setUsers] = useState([]);
   const userContext = useContext(UserContext);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
   const handleEditClose = () => setShowEditDialog(false);
   
@@ -41,8 +42,10 @@ function Users() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function getUsers(){
+    setShowLoading(true);
     userContext.getAll().then((res) => {
       //console.log(res.result);
+      setShowLoading(false);
       setUsers(res.result.items);
     }).catch((err) => { console.log(err) });
   }
@@ -57,10 +60,11 @@ function Users() {
     if (showEditDialog) {
       //console.log(userData);
       handleEditClose();
-
+      setShowLoading(true);
       // update the selected user
       userContext.update(userData).then((res) => {
         //console.log(res);
+        setShowLoading(false);
         if (res?.success) {
           addNotification(`You successfully update user with email ${res?.result.emailAddress}`, types.success);
         } else{
@@ -78,8 +82,10 @@ function Users() {
 
     if (data) {
       handleDeleteClose();
+      setShowLoading(true);
       userContext.deleteUser(data.data.id).then((res) => {
         //console.log(res);
+        setShowLoading(false);
         if (res?.success) {
           addNotification(`You successfully delete user.`, types.success);
         } else{
@@ -93,7 +99,8 @@ function Users() {
   }
 
   return (
-    <>
+    !showLoading
+    ?<>
       <Table responsive>
         <thead>
           {users.length > 0 &&
@@ -234,7 +241,7 @@ function Users() {
           <Modal.Title>Delete...</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure You want to delete current user {data.name}?
+          Are you sure You want to delete current user {data.userName}?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleDeleteClose}>
@@ -251,6 +258,7 @@ function Users() {
         </Modal.Footer>
       </Modal>
     </>
+    :<Loading/>
   );
 }
 
