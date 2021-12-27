@@ -27,7 +27,7 @@ function Header() {
   }
 
   useEffect(() => {
-    getNewValueHandler(1);
+    getNewValueHandler(100);
   }, []);
 
   return (
