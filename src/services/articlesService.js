@@ -50,6 +50,24 @@ export const getArticleById = async (articleId) => {
     }
 }
 
+export const getSearch = async (searchData) => {
+    let res = await fetch(`${REACT_APP_API_BASE_URL}/api/services/app/Articles/GetAll?Keyword=${searchData}`, {
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': cookiesService.GetToken(),
+            'Abp.TenantId': Default_Tenant_Id,
+        }
+    });
+
+    let jsonResult = await res.json();
+    // console.log(jsonResult.result);
+    if (res.ok) {
+        return jsonResult;
+    } else {
+        throw jsonResult.message;
+    }
+}
+
 export const UpdateArticleById = async (articleId, articleData) => {
     let res = await fetch(`${REACT_APP_API_BASE_URL}/api/services/app/Articles/Update`, {
         method: "PUT",
