@@ -6,6 +6,7 @@ import {
   Button,
   InputGroup,
   Modal,
+  Form,
   FormControl,
 } from "react-bootstrap";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -13,11 +14,17 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import "./PostDetails.css";
 
 import useArticleState from "../../hooks/useArticleState";
-import { ArticleContext, articleContextValues } from "../../context/articleContext";
-import { useNotificationContext, types } from '../../context/NotificationContext';
+import {
+  ArticleContext,
+  articleContextValues,
+} from "../../context/articleContext";
+import {
+  useNotificationContext,
+  types,
+} from "../../context/NotificationContext";
 import { isAuth } from "../../services/authService";
 import { GetUserId } from "../../services/cookiesService";
-import Loading from '../loading/Loading';
+import Loading from "../loading/Loading";
 
 function PostDetails() {
   const articleContext = useContext(ArticleContext);
@@ -44,21 +51,36 @@ function PostDetails() {
     setShowEditDialog(true);
 
     if (showEditDialog) {
+      
       //console.log(userData);
-      handleEditClose();
-      setShowLoading(true);
-      // update the selected user
-      articleContext.updateArticle(articleData).then((res) => {
-        //console.log(res);
-        setShowLoading(false);
-        if (res?.success) {
-          addNotification(`You successfully update article with title ${res?.result.title}`, types.success);
-        } else{
-          addNotification('Something went wrong with update...', types.error);
-        }
-      }).catch((err)=>{
-        addNotification('Something went wrong with user create...', types.error);
-      });
+      if (articleData.title && articleData.description) {
+        handleEditClose();
+        setShowLoading(true);
+        // update the selected user
+        articleContext
+          .updateArticle(articleData)
+          .then((res) => {
+            //console.log(res);
+            setShowLoading(false);
+            if (res?.success) {
+              addNotification(
+                `You successfully update article with title ${res?.result.title}`,
+                types.success
+              );
+            } else {
+              addNotification(
+                "Something went wrong with update...",
+                types.error
+              );
+            }
+          })
+          .catch((err) => {
+            addNotification(
+              "Something went wrong with user create...",
+              types.error
+            );
+          });
+      }
     }
   }
 
@@ -68,27 +90,32 @@ function PostDetails() {
     if (articleData) {
       handleDeleteClose();
       setShowLoading(true);
-      articleContext.deleteArticle(articleData?.id).then((res) => {
-        //console.log(res);
-        setShowLoading(false);
-        if (res?.success) {
-          addNotification(`You successfully delete article.`, types.success);
-        } else{
-          addNotification('Something went wrong with update...', types.error);
-        }
-        navigate("/");
-      }).catch((err)=>{
-        addNotification('Something went wrong with user create...', types.error);
-      });
+      articleContext
+        .deleteArticle(articleData?.id)
+        .then((res) => {
+          //console.log(res);
+          setShowLoading(false);
+          if (res?.success) {
+            addNotification(`You successfully delete article.`, types.success);
+          } else {
+            addNotification("Something went wrong with update...", types.error);
+          }
+          navigate("/");
+        })
+        .catch((err) => {
+          addNotification(
+            "Something went wrong with user create...",
+            types.error
+          );
+        });
     }
   }
 
   const { articleId } = useParams();
   const [article, setArticle] = useArticleState(articleId);
-  
-  return (
-    !showLoading
-    ?<>
+
+  return !showLoading ? (
+    <>
       <br />
       <Row key={article.id}>
         <Col>
@@ -151,8 +178,12 @@ function PostDetails() {
               name="title"
               aria-describedby="basic-addon1"
               onChange={onChangeArticleHandler}
+              required
             />
           </InputGroup>
+          <span className="invalid-span">
+            {!article.title && " Title is required"}
+          </span>
           <InputGroup className="mb-3">
             <InputGroup.Text className="post-text-label" id="imageUrl">
               Image Url
@@ -179,8 +210,12 @@ function PostDetails() {
               defaultValue={article.description}
               aria-describedby="basic-addon1"
               onChange={onChangeArticleHandler}
+              required
             />
           </InputGroup>
+          <span className="invalid-span">
+            {!article.description && " Description is required"}
+          </span>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleEditClose}>
@@ -212,7 +247,8 @@ function PostDetails() {
         </Modal.Footer>
       </Modal>
     </>
-    :<Loading/>
+  ) : (
+    <Loading />
   );
 }
 

@@ -1,14 +1,25 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Form, Button, Col, Row, FormControl } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Button,
+  Col,
+  Row,
+  FormControl,
+  FormGroup,
+} from "react-bootstrap";
 
 import "./AddPost.css";
 
 import { create } from "../../services/articlesService";
 import { isAuth } from "../../services/authService";
-import { useNotificationContext, types } from '../../context/NotificationContext';
+import {
+  useNotificationContext,
+  types,
+} from "../../context/NotificationContext";
 
-import Loading from '../loading/Loading';
+import Loading from "../loading/Loading";
 
 function AddPost() {
   const [article, setArticle] = useState({
@@ -17,6 +28,7 @@ function AddPost() {
     description: "",
   });
   const [showLoading, setShowLoading] = useState(false);
+  const [validated, setValidated] = useState(false);
 
   const { addNotification } = useNotificationContext();
   const navigate = useNavigate();
@@ -32,36 +44,55 @@ function AddPost() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    setShowLoading(true);
-    create({article}).then((res) => {
-      //console.log(res?.result.title);
-      setShowLoading(false);
-      if (res?.success) {
-        addNotification(`You successfully create article with title ${res?.result.title}`, types.success);
-      } else{
-        addNotification('Something went wrong with update...', types.error);
-      }
-      navigate("/");
-    }).catch((err)=>{
-      addNotification('Something went wrong with user create...', types.error);
-    });
+
+    let articleData = Object.fromEntries(new FormData(e.currentTarget));
+
+    if (articleData.title && articleData.description) {
+      setShowLoading(true);
+      create(articleData)
+        .then((res) => {
+          //console.log(res?.result.title);
+          setShowLoading(false);
+          if (res?.success) {
+            addNotification(
+              `You successfully create article with title ${res?.result.title}`,
+              types.success
+            );
+          } else {
+            addNotification("Something went wrong with update...", types.error);
+          }
+          navigate("/");
+        })
+        .catch((err) => {
+          addNotification(
+            "Something went wrong with user create...",
+            types.error
+          );
+          setShowLoading(false);
+        });
+    }
   };
 
-  return (
-    !showLoading
-    ?<Card body>
-      <Form onSubmit={onSubmitHandler}>
+  return !showLoading ? (
+    <Card body>
+      <Form noValidate validated={validated} onSubmit={onSubmitHandler}>
         <Row>
           <Form.Label column lg={2}>
             Title
           </Form.Label>
           <Col>
-            <Form.Control
-              type="text"
-              name="title"
-              onChange={onAddPostChangeHandler}
-              placeholder="Title..."
-            />
+            <Form.Group className="mb-3" controlId="validationTitle">
+              <Form.Control
+                type="text"
+                name="title"
+                placeholder="Title..."
+                onChange={onAddPostChangeHandler}
+                required
+              />
+              <span style={{ color: "red" }}>
+                {!article.title && " Title is required"}
+              </span>
+            </Form.Group>
           </Col>
         </Row>
         <br />
@@ -89,7 +120,6 @@ function AddPost() {
               size="sm"
               type="text"
               name="imageUrl"
-              onChange={onAddPostChangeHandler}
               placeholder="Image url..."
             />
           </Col>
@@ -100,14 +130,20 @@ function AddPost() {
             Article
           </Form.Label>
           <Col>
-            <Form.Control
-              size="sm"
-              as="textarea"
-              name="description"
-              onChange={onAddPostChangeHandler}
-              placeholder="Create a blog post"
-              style={{ height: "100px" }}
-            />
+            <Form.Group className="mb-3" controlId="validationAricle">
+              <Form.Control
+                size="sm"
+                as="textarea"
+                name="description"
+                placeholder="Create a blog post"
+                style={{ height: "100px" }}
+                onChange={onAddPostChangeHandler}
+                required
+              />
+              <span style={{ color: "red" }}>
+                {!article.description && " Title is required"}
+              </span>
+            </Form.Group>
           </Col>
         </Row>
         <br />
@@ -116,7 +152,8 @@ function AddPost() {
         </Button>
       </Form>
     </Card>
-    :<Loading/>
+  ) : (
+    <Loading />
   );
 }
 

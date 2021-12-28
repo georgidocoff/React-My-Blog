@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { Card, Button, Col, Row } from "react-bootstrap";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import { ArticleContext } from "../../context/articleContext";
-import Loading from '../loading/Loading';
+import Loading from "../loading/Loading";
 
 import "./AllPosts.css";
 
@@ -33,19 +33,20 @@ const AllPosts = () => {
     });
   }
 
-  return (
-    !showLoading
-    ?<>
+  return !showLoading ? (
+    <>
       {(data.length > 0 &&
         data.map((x) => (
           <>
             <br />
-            <Row key={x.id}>
+            <Row>
               <Col>
-                <Card.Body>
+                <Card.Body key={x.id}>
                   <Card.Title>{x.title}</Card.Title>
                   <Card.Text>{x.description}</Card.Text>
-                  <Link className="button" to={`/post/${x.id}/details`}>Details</Link>
+                  <Link className="button" to={`/post/${x.id}/details`}>
+                    Details
+                  </Link>
                 </Card.Body>
               </Col>
               <Col>
@@ -57,7 +58,8 @@ const AllPosts = () => {
           </>
         ))) || <h3>No data avaiable...</h3>}
     </>
-    :<Loading/>
+  ) : (
+    <Loading />
   );
 };
 

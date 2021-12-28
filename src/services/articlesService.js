@@ -8,7 +8,7 @@ import {
 export const create = async (articleData) => {
 
     let jsonBody = JSON.stringify({
-        ...articleData.article
+        ...articleData
     });
     //console.log(jsonBody);
 
