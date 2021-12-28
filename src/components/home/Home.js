@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from "react";
+import {Link} from 'react-router-dom';
 import { Card, CardGroup } from "react-bootstrap";
 
 import { isAuth } from "../../services/authService";
@@ -46,6 +47,7 @@ function Home() {
   },[userContext])
 
   data.map((x) => (x.userFullName = renderPublishUser(x.creatorUserId)));
+
   return (
     !showLoading
     ?<CardGroup>
@@ -55,7 +57,9 @@ function Home() {
             <Card key={x.id}>
               <Card.Img variant="top" src="" />
               <Card.Body>
-                <Card.Title>{x.title}</Card.Title>
+                {isAuth()
+                ?<Card.Title as={Link} to={`/post/${x.id}/details`}>{x.title}</Card.Title>
+                :<Card.Title>{x.title}</Card.Title>}
                 <Card.Text>{x.description}</Card.Text>
               </Card.Body>
               <Card.Footer>
