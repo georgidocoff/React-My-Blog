@@ -20,6 +20,7 @@ import { NotificationProvider } from './context/NotificationContext'
 import Notification from "./components/notification/Notification";
 import { AuthContext, authValues } from './context/authContext';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import PageNotFound from "./components/pageNotFound/PageNotFound";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               <Route path="/post/:articleId/details" element={<PostDetails />} />
             </Route>
 
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>
         </NotificationProvider>
