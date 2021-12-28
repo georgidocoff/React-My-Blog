@@ -141,7 +141,7 @@ function AddPost() {
                 required
               />
               <span style={{ color: "red" }}>
-                {!article.description && " Title is required"}
+                {!article.description && " Description is required"}
               </span>
             </Form.Group>
           </Col>
