@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import "./Profile.css";
 
 import * as cookiesService from "../../services/cookiesService";
 import useUserState from "../../hooks/useUserState";
 import * as userService from "../../services/userService";
+import { getUserArticles } from "../../services/articlesService";
 import {
   useNotificationContext,
   types,
@@ -20,6 +21,7 @@ const Profile = () => {
   const [user, setUser] = useUserState(userId);
   const [showLoading, setShowLoading] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [userArticles, setUserArticles] = useState([]);
 
   function update(userId, profileData) {
     setShowLoading(true);
@@ -56,100 +58,130 @@ const Profile = () => {
 
     let profileData = Object.fromEntries(new FormData(form));
 
-   update(user.id, profileData);
+    update(user.id, profileData);
   };
 
+  useEffect(() => {
+    console.log(userId);
+    getUserArticles(userId).then((res) => {
+      setUserArticles(res);
+    });
+  }, [userId]);
+
+  console.log(userArticles);
+
   return !showLoading ? (
-    <Card className="form" style={{ width: "fit-content" }}>
-      <Card.Body>
-        <Form
-          method="POST"
-          noValidate
-          validated={validated}
-          onSubmit={profileSubmitHandler}
-        >
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridUserName">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter username"
-                defaultValue={user.userName}
-                name="userName"
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please fill a username.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                defaultValue={user.emailAddress}
-                name="emailAddress"
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please fill an e-mail.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridFirstName">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="firstName"
-                placeholder="Enter First Name"
-                defaultValue={user.name}
-                name="name"
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please fill user first name.
-              </Form.Control.Feedback>
-            </Form.Group>
+    <>
+      <Card className="form" style={{ width: "fit-content" }}>
+        <Card.Body>
+          <Form
+            method="POST"
+            noValidate
+            validated={validated}
+            onSubmit={profileSubmitHandler}
+          >
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formGridUserName">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter username"
+                  defaultValue={user.userName}
+                  name="userName"
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please fill a username.
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formGridEmail">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter email"
+                  defaultValue={user.emailAddress}
+                  name="emailAddress"
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please fill an e-mail.
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formGridFirstName">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                  type="firstName"
+                  placeholder="Enter First Name"
+                  defaultValue={user.name}
+                  name="name"
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please fill user first name.
+                </Form.Control.Feedback>
+              </Form.Group>
 
-            <Form.Group as={Col} controlId="formGridSurName">
-              <Form.Label>Sur Name</Form.Label>
-              <Form.Control
-                type="surName"
-                placeholder="Enter Sur Name"
-                defaultValue={user.surname}
-                name="surName"
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please fill user sur name.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="formGridIsActive">
-              <Form.Check
-                type="checkbox"
-                label="Is Active"
-                defaultChecked={user.isActive}
-                disabled
-              />
-              <Form.Control
-                hidden
-                type="isActive"
-                defaultValue={user.isActive}
-                name="isActive"
-              />
-            </Form.Group>
-          </Row>
+              <Form.Group as={Col} controlId="formGridSurName">
+                <Form.Label>Sur Name</Form.Label>
+                <Form.Control
+                  type="surName"
+                  placeholder="Enter Sur Name"
+                  defaultValue={user.surname}
+                  name="surName"
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please fill user sur name.
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formGridIsActive">
+                <Form.Check
+                  type="checkbox"
+                  label="Is Active"
+                  defaultChecked={user.isActive}
+                  disabled
+                />
+                <Form.Control
+                  hidden
+                  type="isActive"
+                  defaultValue={user.isActive}
+                  name="isActive"
+                />
+              </Form.Group>
+            </Row>
 
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-      </Card.Body>
-    </Card>
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Card.Body>
+        <Card.Body>
+          User Articles:
+          {userArticles?.map((x) => {
+            return (
+              <Row>
+                -{" "}
+                <Col as={Link} to={`/post/${x.id}/details`}>
+                  {" "}
+                  Title: {x.title}
+                </Col>
+                <Col>
+                  {" "}
+                  Description:{x.description.substring(0, 70)}
+                  {x.description.length > 70 && <span>...</span>}
+                </Col>
+              </Row>
+            );
+          })}
+        </Card.Body>
+      </Card>
+    </>
   ) : (
     <Loading />
   );
