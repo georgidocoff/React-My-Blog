@@ -14,19 +14,15 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import "./PostDetails.css";
 
 import useArticleState from "../../hooks/useArticleState";
-import {
-  ArticleContext,
-  articleContextValues,
-} from "../../context/articleContext";
-import {
-  useNotificationContext,
-  types,
-} from "../../context/NotificationContext";
+import { ArticleContext,  articleContextValues} from "../../context/articleContext";
+import { useNotificationContext, types } from "../../context/NotificationContext";
+import { UserContext, userContextValues } from "../../context/userContext";
 import { isAuth } from "../../services/authService";
 import { GetUserId } from "../../services/cookiesService";
 import Loading from "../loading/Loading";
 
 function PostDetails() {
+  const userContext = useContext(UserContext);
   const articleContext = useContext(ArticleContext);
   const { addNotification } = useNotificationContext();
 
@@ -123,12 +119,29 @@ function PostDetails() {
     }
   }
 
+  function renderPublishUser(userId) {
+    let user = users?.find((x) => x.id == userId);
+    if (!user) {
+      return "N/A";
+    }
+    return `${user?.name} ${user?.surname}`;
+  }
+
+  const [users, setUsers] = useState([]);
   const { articleId } = useParams();
   const [article, setArticle] = useArticleState(articleId);
 
+  useEffect(()=>{
+    userContext.getAll().then((res) => {
+      //console.log(res.result);
+      setUsers(res?.result.items);
+    }).catch((err) => { console.log(err) });
+  },[userContext])
+
+  article.creatorFullName = renderPublishUser(article.creatorUserId);
+
   return !showLoading ? (
     <>
-      <br />
       <Row key={article.id}>
         <Col>
           <Card.Body>
@@ -186,6 +199,8 @@ function PostDetails() {
               <span>Article likes: {article?.likes?.length}</span>{" "}
             </>
           )}
+          <br />
+          <span>Creted by: {article.creatorFullName}</span>
         </Card.Footer>
       </Row>
 
