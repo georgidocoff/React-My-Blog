@@ -51,7 +51,6 @@ function PostDetails() {
     setShowEditDialog(true);
 
     if (showEditDialog) {
-      
       //console.log(userData);
       if (articleData.title && articleData.description) {
         handleEditClose();
@@ -111,6 +110,19 @@ function PostDetails() {
     }
   }
 
+  function onLikeClickHandler(article) {
+    //TODO add likes to backend
+    if (!article?.likes?.includes(article.creatorUserId)) {
+      setArticle((state) => ({
+        ...state,
+        likes: [...state.likes, article.creatorUserId],
+      }));
+      addNotification('You like article.',types.success);
+    } else{
+        addNotification('User can like only once.',types.warn);
+    }
+  }
+
   const { articleId } = useParams();
   const [article, setArticle] = useArticleState(articleId);
 
@@ -136,7 +148,7 @@ function PostDetails() {
       </Row>
       <Row>
         <Card.Footer>
-          {article.creatorUserId == GetUserId() && (
+          {(article.creatorUserId == GetUserId() && (
             <>
               <Button
                 id={article.id}
@@ -158,6 +170,20 @@ function PostDetails() {
               >
                 Dell
               </Button>
+            </>
+          )) || (
+            <>
+              <Button
+                id={article.likes}
+                variant="info"
+                //onClick={onChangeArticleHandler}
+                onClick={() => {
+                  onLikeClickHandler(article);
+                }}
+              >
+                Like
+              </Button>{" "}
+              <span>Article likes: {article?.likes?.length}</span>{" "}
             </>
           )}
         </Card.Footer>

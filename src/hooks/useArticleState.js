@@ -18,7 +18,8 @@ const useArticleState = (articleId) => {
     useEffect(() => {
         articleService.getArticleById(articleId)
             .then((res) => {
-                setArticle(res.result);
+                let result ={...res.result,likes:[]}
+                setArticle(result);
             })
             .catch((err) =>
             console.log(err)
