@@ -21,6 +21,7 @@ import Notification from "./components/notification/Notification";
 import { AuthContext, authValues } from './context/authContext';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import PageNotFound from "./components/pageNotFound/PageNotFound";
+import AuthGuard from "./components/authGuard/AuthGuard";
 
 function App() {
   return (
@@ -34,10 +35,13 @@ function App() {
           
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/post/all" element={<AllPosts />} />
+
+            <Route element={<AuthGuard />}>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            </Route>
           
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<Profile />} />
