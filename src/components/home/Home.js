@@ -9,7 +9,7 @@ import { UserContext, userContextValues } from "../../context/userContext";
 import Loading from '../loading/Loading';
 
 function publishPostTime(createTime) {
-  return Math.round((Date.now() - Date.parse(createTime)) / (60 * 1000)) - 60;
+  return Math.floor((Date.now() - Date.parse(createTime)) / (60 * 1000)) - 60;
 }
 
 function Home() {
@@ -60,7 +60,7 @@ function Home() {
                 {isAuth()
                 ?<Card.Title as={Link} to={`/post/${x.id}/details`}>{x.title}</Card.Title>
                 :<Card.Title>{x.title}</Card.Title>}
-                <Card.Text>{x.description}</Card.Text>
+                <Card.Text>{x.description.substring(0,180)}{x.description.length>180 && <span>...</span>}</Card.Text>
               </Card.Body>
               <Card.Footer>
                 <small className="text-muted">
