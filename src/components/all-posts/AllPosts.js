@@ -43,7 +43,7 @@ const AllPosts = () => {
               <Col>
                 <Card.Body key={x.id}>
                   <Card.Title>{x.title}</Card.Title>
-                  <Card.Text>{x.description}</Card.Text>
+                  <Card.Text>{x.description.substring(0,570)}{x.description.length>570 && <span> ...</span>}</Card.Text>
                   <Link className="button" to={`/post/${x.id}/details`}>
                     Details
                   </Link>
@@ -51,7 +51,7 @@ const AllPosts = () => {
               </Col>
               <Col>
                 <Card className="pictureInPost">
-                  <Card.Img variant="top" src={x.imageUrl} />
+                  <Card.Img className="pictureInPost" variant="top" src={x.imageUrl} />
                 </Card>
               </Col>
             </Row>
