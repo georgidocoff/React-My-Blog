@@ -71,7 +71,11 @@ function AddPost() {
           setShowLoading(false);
         });
     } else {
+      setShowLoading(true);
       addNotification("Missing article title or description.", types.error);
+      setTimeout(() => {
+        setShowLoading(false);
+      }, 1000);
     }
   };
 
