@@ -27,9 +27,11 @@ const Logout = () => {
                     navigate('/');
                 }, 500);
             })
-            .catch((err)=>
-                console.log(err)
-            )
+            .catch((err)=>{
+                console.log(err);
+                setShowLoading(false);
+                removeCookie(Default_Token_Name);
+            })
     }, [cookies, setCookie, removeCookie, navigate]);
 
     return (showLoading?<Loading/>:null);
