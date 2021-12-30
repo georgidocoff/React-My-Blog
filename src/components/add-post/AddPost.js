@@ -70,6 +70,8 @@ function AddPost() {
           );
           setShowLoading(false);
         });
+    } else {
+      addNotification("Missing article title or description.", types.error);
     }
   };
 
