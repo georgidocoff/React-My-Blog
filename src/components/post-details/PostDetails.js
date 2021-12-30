@@ -47,7 +47,6 @@ function PostDetails() {
     setShowEditDialog(true);
 
     if (showEditDialog) {
-      //console.log(userData);
       if (articleData.title && articleData.description) {
         handleEditClose();
         setShowLoading(true);
@@ -55,7 +54,6 @@ function PostDetails() {
         articleContext
           .updateArticle(articleData)
           .then((res) => {
-            //console.log(res);
             setShowLoading(false);
             if (res?.success) {
               addNotification(
@@ -70,11 +68,17 @@ function PostDetails() {
             }
           })
           .catch((err) => {
+            setShowLoading(false);
             addNotification(
               "Something went wrong with user create...",
               types.error
             );
           });
+      } else {
+        addNotification(
+          "Required value for article not filled: title or description.",
+          types.error
+        );
       }
     }
   }
@@ -88,7 +92,6 @@ function PostDetails() {
       articleContext
         .deleteArticle(articleData?.id)
         .then((res) => {
-          //console.log(res);
           setShowLoading(false);
           if (res?.success) {
             addNotification(`You successfully delete article.`, types.success);
@@ -133,7 +136,6 @@ function PostDetails() {
 
   useEffect(()=>{
     userContext.getAll().then((res) => {
-      //console.log(res.result);
       setUsers(res?.result.items);
     }).catch((err) => { console.log(err) });
   },[userContext])
@@ -189,7 +191,6 @@ function PostDetails() {
               <Button
                 id={article.likes}
                 variant="info"
-                //onClick={onChangeArticleHandler}
                 onClick={() => {
                   onLikeClickHandler(article);
                 }}
